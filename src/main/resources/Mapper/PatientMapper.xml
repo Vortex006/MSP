@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyj.msp.Mapper.PatientMapper">
+
+    <resultMap id="patientMap" type="com.zyj.msp.Entity.Patient">
+        <id column="patient_id" property="patientId" jdbcType="INTEGER"/>
+        <result column="patient_name" property="patientName" jdbcType="VARCHAR"/>
+        <result column="patient_sex" property="patientSex" jdbcType="VARCHAR"/>
+        <result column="patient_age" property="patientAge" jdbcType="INTEGER"/>
+        <result column="patient_birthday" property="patientBirthday" jdbcType="DATE"/>
+        <result column="patient_phone" property="patientPhone" jdbcType="VARCHAR"/>
+        <result column="patient_cert_no" property="patientCertNo" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="create_user" property="createUser" jdbcType="VARCHAR"/>
+        <result column="update_user" property="updateUser" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="savePatient">
+        INSERT INTO t_patient
+        (patient_name, patient_sex, patient_age, patient_birthday, patient_phone, patient_cert_no, create_time,
+         update_time, create_user, update_user)
+        VALUES (#{patientName}, #{patientSex}, #{patientAge}, #{patientBirthday}, #{patientPhone}, #{patientCertNo},
+                #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+    <update id="updatePatient">
+        UPDATE t_patient
+        SET patient_name     = #{patientName},
+            patient_sex      = #{patientSex},
+            patient_age      = #{patientAge},
+            patient_birthday = #{patientBirthday},
+            patient_phone    = #{patientPhone},
+            patient_cert_no  = #{patientCertNo},
+            update_time      = #{updateTime},
+            update_user      = #{updateUser}
+        WHERE patient_id = #{patientId}
+    </update>
+
+    <delete id="deletePatient">
+        DELETE
+        FROM t_patient
+        WHERE patient_id = #{patientId}
+    </delete>
+
+    <select id="getPatient" resultMap="patientMap">
+        SELECT *
+        FROM t_patient
+        WHERE patient_id = #{patientId}
+    </select>
+
+    <select id="getPatientByCertNo" resultMap="patientMap">
+        SELECT *
+        FROM t_patient
+        WHERE patient_cert_no = #{certNo}
+    </select>
+
+    <select id="listPatients" resultMap="patientMap">
+        SELECT *
+        FROM t_patient
+    </select>
+
+    <select id="limitPatients" resultMap="patientMap">
+        SELECT *
+        FROM t_patient
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <select id="getPatientCount" resultType="Integer">
+        SELECT COUNT(*)
+        FROM t_patient
+    </select>
+
+</mapper>

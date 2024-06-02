@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyj.msp.Mapper.MenuMapper">
+
+    <resultMap id="menuMap" type="com.zyj.msp.Entity.Menu">
+        <id column="menu_id" property="menuId" jdbcType="INTEGER"/>
+        <result column="menu_name" property="menuName" jdbcType="VARCHAR"/>
+        <result column="menu_path" property="menuPath" jdbcType="VARCHAR"/>
+        <result column="menu_icon" property="menuIcon" jdbcType="VARCHAR"/>
+        <result column="menu_have_child" property="menuHaveChild" jdbcType="BOOLEAN"/>
+        <result column="menu_parent" property="menuParent" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+    </resultMap>
+
+
+    <resultMap id="iconMap" type="com.zyj.msp.Entity.Icon">
+        <id property="iconId" column="icon_id"/>
+        <result property="iconName" column="icon_name"/>
+        <result property="iconContent" column="icon_content"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+    </resultMap>
+
+
+    <select id="listParentMenus" resultMap="menuMap">
+        SELECT *
+        FROM t_menu
+        WHERE menu_parent = 0;
+    </select>
+
+    <select id="listMenuByParentId" resultMap="menuMap">
+        SELECT *
+        FROM t_menu
+        WHERE menu_parent = #{menuParentId};
+    </select>
+
+    <select id="getIcon" resultMap="iconMap">
+        SELECT *
+        FROM t_icon
+        WHERE icon_id = #{iconId};
+    </select>
+
+    <select id="getIconByName" resultMap="iconMap">
+        SELECT *
+        FROM t_icon
+        WHERE icon_name = #{iconName};
+    </select>
+
+</mapper>

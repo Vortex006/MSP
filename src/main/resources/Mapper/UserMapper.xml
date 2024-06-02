@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyj.msp.Mapper.UserMapper">
+
+    <resultMap id="userMap" type="com.zyj.msp.Entity.User">
+        <id column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_password" property="userPassword"/>
+        <result column="user_salt" property="userSalt"/>
+        <result column="user_state" property="userState"/>
+        <result column="user_flag" property="userFlag"/>
+        <result column="user_relevance_id" property="userRelevanceId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+    </resultMap>
+
+    <select id="getUserByName" resultMap="userMap">
+        SELECT *
+        FROM t_user
+        WHERE user_name = #{username}
+    </select>
+
+    <select id="getUser" resultMap="userMap">
+        SELECT *
+        FROM t_user
+        WHERE user_id = #{userId}
+    </select>
+
+    <insert id="saveUser">
+        INSERT INTO t_user
+        (user_name, user_password, user_salt, user_state, user_flag, user_relevance_id, create_time, update_time,
+         create_user, update_user)
+        VALUES (#{userName}, #{userPassword}, #{userSalt}, #{userState}, #{userFlag}, #{userRelevanceId}, #{createTime},
+                #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+    <update id="updateUser">
+        UPDATE t_user
+        SET user_name         = #{userName},
+            user_password     = #{userPassword},
+            user_salt         = #{userSalt},
+            user_state        = #{userState},
+            user_flag         = #{userFlag},
+            user_relevance_id = #{userRelevanceId},
+            update_time       = #{updateTime},
+            update_user       = #{updateUser}
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="deleteUser">
+        DELETE
+        FROM t_user
+        WHERE user_id = #{userId}
+    </delete>
+
+    <select id="listUsers" resultMap="userMap">
+        SELECT *
+        FROM t_user
+    </select>
+
+    <select id="limitUsers" resultMap="userMap">
+        SELECT *
+        FROM t_user
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <select id="getUserCount" resultType="Integer">
+        SELECT COUNT(*)
+        FROM t_user
+    </select>
+
+</mapper>

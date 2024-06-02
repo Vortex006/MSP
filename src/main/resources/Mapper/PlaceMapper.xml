@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyj.msp.Mapper.PlaceMapper">
+
+    <resultMap id="placeMap" type="com.zyj.msp.Entity.Place">
+        <id column="place_id" property="placeId"/>
+        <result column="place_area" property="area"/>
+        <result column="place_city" property="city"/>
+        <result column="place_code" property="placeCode"/>
+        <result column="place_name" property="placeName"/>
+        <result column="place_province" property="province"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+    </resultMap>
+
+    <select id="listAllPlaces" resultMap="placeMap">
+        SELECT *
+        FROM t_place;
+    </select>
+
+    <select id="getPlace" resultMap="placeMap">
+        SELECT *
+        FROM t_place
+        WHERE place_id = #{place_id}
+    </select>
+
+    <select id="getPlaceByName" resultMap="placeMap">
+        SELECT *
+        FROM t_place
+        WHERE place_name LIKE CONCAT('%', #{placeName}, '%')
+    </select>
+
+</mapper>
