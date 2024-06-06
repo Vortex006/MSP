@@ -10,10 +10,10 @@ public class MspWebConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new JWTInterceptor())
-                .addPathPatterns("/**").excludePathPatterns("/login/**", "/index.html");
 //        registry.addInterceptor(new JWTInterceptor())
-//                .excludePathPatterns("/**");
+//                .addPathPatterns("/**").excludePathPatterns("/login/**", "/index.html");
+        registry.addInterceptor(new JWTInterceptor())
+                .excludePathPatterns("/**");
     }
 
     @Override

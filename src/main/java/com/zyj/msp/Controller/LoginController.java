@@ -7,7 +7,9 @@ import com.zyj.msp.Entity.User;
 import com.zyj.msp.ExcelEntity.DemoEntity;
 import com.zyj.msp.Service.PatientService;
 import com.zyj.msp.Service.UserService;
+import com.zyj.msp.ServiceImpl.MailService;
 import com.zyj.msp.Utils.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,10 +28,13 @@ public class LoginController {
 
     private final UserService userService;
     private final PatientService patientService;
+    private final MailService mailService;
 
-    public LoginController(UserService userService, PatientService patientService) {
+    @Autowired
+    public LoginController(UserService userService, PatientService patientService, MailService mailService) {
         this.userService = userService;
         this.patientService = patientService;
+        this.mailService = mailService;
     }
 
     @GetMapping("/{userId}")
@@ -135,5 +140,13 @@ public class LoginController {
             list.add(d);
         }
         return list;
+    }
+
+    @GetMapping("/mail")
+    public Result sendMail() {
+        String code = DataUtil.getVerificationCode();
+        String emaliHtml = EmailUtil.buildContent(code);
+        mailService.sendTextMailMessage("3409212131@qq.com","这只是一个测试",emaliHtml);
+        return Result.SUCCEED();
     }
 }

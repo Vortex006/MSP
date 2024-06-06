@@ -5,6 +5,8 @@ import com.zyj.msp.Exception.ParameterNullException;
 import com.zyj.msp.Mapper.RoomMapper;
 import com.zyj.msp.Service.RoomService;
 import com.zyj.msp.Utils.DataUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import java.util.List;
 @Service
 public class RoomServiceImpl implements RoomService {
     private final RoomMapper roomMapper;
+    private static final Logger logger = LoggerFactory.getLogger(RoomService.class);
 
     @Autowired
     public RoomServiceImpl(RoomMapper roomMapper) {
@@ -21,8 +24,10 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public boolean saveRoom(Room room) {
-        int i = roomMapper.saveRoom(room);
-        return i > 0;
+//        int i = roomMapper.saveRoom(room);
+//        return i > 0;
+        logger.info(room.toString());
+        return true;
     }
 
     @Override
