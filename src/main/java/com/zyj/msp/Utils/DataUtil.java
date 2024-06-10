@@ -49,6 +49,37 @@ public class DataUtil {
     private static int codeLength;
 
     /**
+     * 随机生成一个 8-16位 大小写字母数字组合的密码
+     *
+     * @param min 最小长度
+     * @param max 最大长度
+     * @return 密码
+     */
+    public static String getRandomPassword(int min, int max) {
+        String chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        if (min > max) return Empty; // 如果最小值大于最大值，则返回空字符串
+        int PasswordLength = random.nextInt(min) + (max - min);
+        StringBuilder PasswordBuilder = new StringBuilder();
+        int length = chars.length();
+        for (int j = 0; j < PasswordLength; j++) {
+            char c = chars.charAt(random.nextInt(length));
+            PasswordBuilder.append(c);
+        }
+        String password = new String(PasswordBuilder);
+        return password;
+    }
+
+    @Value("${Mark}")
+    public void setMark(char mark) {
+        DataUtil.mark = mark;
+    }
+
+    @Value("${Code.Char.Array}")
+    public void setCodeCharArray(String codeCharArray) {
+        DataUtil.codeCharArray = codeCharArray;
+    }
+
+    /**
      * 重复字符串多次。
      *
      * @param str   需要被重复的字符串。如果为null，函数将返回null。
@@ -88,23 +119,9 @@ public class DataUtil {
         return uuid;
     }
 
-    /**
-     * 随机生成一个 8-16位 大小写字母数字组合的密码
-     *
-     * @return 密码
-     */
-    public static String getRandomPassword(int min, int max) {
-        String chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        if (min > max) return Empty; // 如果最小值大于最大值，则返回空字符串
-        int PasswordLength = random.nextInt(min) + (max - min);
-        StringBuilder PasswordBuilder = new StringBuilder();
-        int length = chars.length();
-        for (int j = 0; j < PasswordLength; j++) {
-            char c = chars.charAt(random.nextInt(length));
-            PasswordBuilder.append(c);
-        }
-        String password = new String(PasswordBuilder);
-        return password;
+    @Value("${Code.Length}")
+    public void setCodeLength(int codeLength) {
+        DataUtil.codeLength = codeLength;
     }
 
     /**
@@ -234,21 +251,5 @@ public class DataUtil {
         char genderCode = certNo.charAt(16);
         return (genderCode % 2 != 0);
     }
-
-    @Value("${Mark}")
-    public void setMark(char mark) {
-        DataUtil.mark = mark;
-    }
-
-    @Value("${Code.Char.Array}")
-    public void setCodeCharArray(String codeCharArray) {
-        DataUtil.codeCharArray = codeCharArray;
-    }
-
-    @Value("${Code.Length}")
-    public void setCodeLength(int codeLength) {
-        DataUtil.codeLength = codeLength;
-    }
-
 
 }

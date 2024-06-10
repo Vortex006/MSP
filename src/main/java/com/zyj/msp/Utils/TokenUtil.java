@@ -17,6 +17,21 @@ public class TokenUtil {
     private static Long EXP; //过期时间六小时 单位:毫秒(ms)
     private static String KEY; //密钥
 
+    @Value("${Token.IIS.Name}")
+    public void setISS(String ISS) {
+        TokenUtil.ISS = ISS;
+    }
+
+    @Value("${Token.EXP.Hours}")
+    public void setEXP(Long EXP) {
+        TokenUtil.EXP = EXP;
+    }
+
+    @Value("${Token.KEY}")
+    public void setKEY(String KEY) {
+        TokenUtil.KEY = KEY;
+    }
+
     /**
      * 获取一个Token
      *
@@ -70,19 +85,6 @@ public class TokenUtil {
      * 如果 int等于0 说明a和b相等 说明token过期
      */
 
-    @Value("${Token.IIS.Name}")
-    public void setISS(String ISS) {
-        TokenUtil.ISS = ISS;
-    }
 
-    @Value("${Token.EXP.Hours}")
-    public void setEXP(Long EXP) {
-        TokenUtil.EXP = EXP;
-    }
-
-    @Value("${Token.KEY}")
-    public void setKEY(String KEY) {
-        TokenUtil.KEY = KEY;
-    }
 
 }

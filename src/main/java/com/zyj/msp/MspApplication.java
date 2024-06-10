@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
-@PropertySource({"classpath:Config/TokenConfig.properties"})
+@PropertySource({"classpath:config/TokenConfig.properties"})
 public class MspApplication {
 
     public static void main(String[] args) {

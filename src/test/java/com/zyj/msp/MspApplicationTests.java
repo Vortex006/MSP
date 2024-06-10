@@ -1,9 +1,6 @@
 package com.zyj.msp;
 
-import com.zyj.msp.Entity.Room;
-import com.zyj.msp.Service.MenuService;
-import com.zyj.msp.Service.RoomService;
-import com.zyj.msp.ServiceImpl.MailService;
+import com.zyj.msp.Service.RedisService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +12,14 @@ public class MspApplicationTests {
     private static final Logger logger = LoggerFactory.getLogger(MspApplicationTests.class);
 
     @Autowired
-    private MailService mailService;
+    private RedisService redisService;
 
     @Test
-    void contextLoads() {}
+    void contextLoads() {
+        Boolean aBoolean = redisService.setString("name", "1");
+        Long name = redisService.valueAdd("name", 11);
+        logger.info("{}", name);
+    }
 
 
 }

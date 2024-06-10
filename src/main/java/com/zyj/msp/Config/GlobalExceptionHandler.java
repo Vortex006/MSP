@@ -56,11 +56,11 @@ public class GlobalExceptionHandler {
      * @param ex 异常参数
      * @return 提示程序出现异常 需要联系管理员处理
      */
-    @ExceptionHandler(value = {Exception.class})
-    protected Result AllExceptionHandler(Exception ex) {
-        System.out.println(ex.getMessage());
-        return Result.Exception("程序出现异常 请联系管理员处理");
-    }
+//    @ExceptionHandler(value = {Exception.class})
+//    protected Result AllExceptionHandler(Exception ex) {
+//        System.out.println(ex.getMessage());
+//        return Result.Exception("程序出现异常 请联系管理员处理");
+//    }
 
     /**
      * 当Token为空时 由此捕获

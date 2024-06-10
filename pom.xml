@@ -17,7 +17,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>2.4.2</spring-boot.version>
         <mybatis-spring-boot.version>2.1.4</mybatis-spring-boot.version>
-        <mysql.version>8.0.28</mysql.version>
+        <mysql.version>5.1.38</mysql.version>
         <swagger.version>2.9.2</swagger.version>
     </properties>
     <dependencies>
@@ -99,12 +99,14 @@
             <artifactId>java-jwt</artifactId>
             <version>3.4.0</version>
         </dependency>
+
         <!-- java 数据库密码加密 -->
         <dependency>
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt</artifactId>
             <version>1.9.3</version>
         </dependency>
+
         <!-- 引入EasyExcel -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -123,6 +125,11 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!--spring-boot-redis所需依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
 
     </dependencies>
 
