@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyj.msp.Mapper.MessageMapper">
+
+    <resultMap id="messageMap" type="com.zyj.msp.Entity.Message">
+        <id property="messageId" column="message_id"/>
+        <result property="messageTitle" column="message_title"/>
+        <result property="messageContent" column="message_content"/>
+        <result property="messageState" column="message_state"/>
+        <result property="messageSystem" column="message_system"/>
+        <result property="messageUserId" column="message_user_id"/>
+        <result property="messageDatetime" column="message_datetime"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <insert id="saveMessage" parameterType="com.zyj.msp.Entity.Message">
+        INSERT INTO t_message(message_title, message_content, message_state, message_system, message_user_id,
+                              message_datetime, create_user, create_time, update_user, update_time)
+        VALUES (#{messageTitle}, #{messageContent}, #{messageState}, #{messageSystem}, #{messageUserId},
+                #{messageDatetime}, #{createUser}, #{createTime}, #{updateUser}, #{updateTime})
+    </insert>
+
+    <update id="updateMessage" parameterType="com.zyj.msp.Entity.Message">
+        UPDATE t_message
+        SET message_title=#{messageTitle},
+            message_content=#{messageContent},
+            message_state=#{messageState},
+            message_system=#{messageSystem},
+            message_user_id=#{messageUserId},
+            message_datetime=#{messageDatetime},
+            update_user=#{updateUser},
+            update_time=#{updateTime}
+        WHERE message_id = #{messageId}
+    </update>
+
+    <delete id="deleteMessage">
+        DELETE
+        FROM t_message
+        WHERE message_id = #{messageId}
+    </delete>
+
+    <select id="listMessagesByDate" resultMap="messageMap">
+        SELECT *
+        FROM t_message
+        WHERE DATE(message_datetime) = #{messageDatetime}
+    </select>
+
+    <select id="countMessageByUser" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM t_message
+        WHERE message_user_id = #{userId}
+    </select>
+
+    <select id="countMessage" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM t_message
+    </select>
+
+    <select id="getMessage" resultMap="messageMap">
+        SELECT *
+        FROM t_message
+        WHERE message_id = #{messageId}
+    </select>
+
+    <select id="listMessagesByUser" resultMap="messageMap">
+        SELECT *
+        FROM t_message
+        WHERE message_user_id = #{userId}
+    </select>
+
+    <select id="listMessages" resultMap="messageMap">
+        SELECT *
+        FROM t_message
+    </select>
+
+    <select id="limitMessages" resultMap="messageMap">
+        SELECT *
+        FROM t_message
+        LIMIT #{offset},#{pageSize};
+    </select>
+
+</mapper>

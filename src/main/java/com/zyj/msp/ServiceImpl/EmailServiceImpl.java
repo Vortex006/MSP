@@ -1,5 +1,6 @@
 package com.zyj.msp.ServiceImpl;
 
+import com.zyj.msp.Service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +13,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
 /**
  * 邮件业务类
+ *
  * @author qzz
  */
 @Service
-public class MailService {
-    private static final Logger logger = LoggerFactory.getLogger(MailService.class);
+public class EmailServiceImpl implements EmailService {
+    private static final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
 
     /**
      * 注入邮件工具类
@@ -59,6 +60,7 @@ public class MailService {
      * @param subject
      * @param text
      */
+    @Override
     public void sendTextMailMessage(String to, String subject, String text) {
 
         try {
@@ -92,5 +94,7 @@ public class MailService {
             System.out.println("发送邮件失败：" + e.getMessage());
         }
     }
+
+
 }
 

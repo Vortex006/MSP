@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.time.LocalDate;
 import java.util.Arrays;
 
 @RestController
@@ -153,12 +152,5 @@ public class FileController {
         // 由于之前已经预防了溢出，这里转换是安全的
         return (int) chunks;
     }
-
-    @PostMapping("/dd")
-    public Result dd(@RequestBody LocalDate date) {
-        logger.info("接收到的日期是：" + date);
-        return Result.SUCCEED();
-    }
-
 
 }

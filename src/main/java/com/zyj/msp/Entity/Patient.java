@@ -46,5 +46,10 @@ public class Patient extends EntityBase {
      */
     private String patientCertNo;
 
+    /**
+     * 患者详细地址
+     */
+    private String patientPlace;
+
 }
 

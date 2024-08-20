@@ -2,6 +2,7 @@ package com.zyj.msp.Mapper;
 
 import com.zyj.msp.Entity.Patient;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,6 +21,6 @@ public interface PatientMapper {
 
     List<Patient> listPatients();
 
-    List<Patient> limitPatients(Integer pageSize, Integer offset);
+    List<Patient> limitPatients(@Param("pageSize") Integer pageSize, @Param("offset") Integer offset);
 
 }

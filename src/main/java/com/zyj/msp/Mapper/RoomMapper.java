@@ -17,7 +17,7 @@ public interface RoomMapper {
 
     Room getRoom(Integer roomId);
 
-    Room getRoomByName(String roomName);
+    List<Room> getRoomsByName(String roomName);
 
     Integer getRoomCount();
 

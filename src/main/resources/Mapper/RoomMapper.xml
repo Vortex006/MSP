@@ -21,11 +21,11 @@
         WHERE room_id = #{roomId}
     </select>
 
-    <select id="getRoomByName" resultMap="roomMap">
+    <select id="getRoomsByName" resultMap="roomMap">
         SELECT *
         FROM t_room
-        WHERE room_zh_name = #{roomZhName}
-           OR room_en_name = #{roomEnName}
+        WHERE room_zh_name LIKE CONCAT('%', #{roomZhName}, '%')
+           OR room_en_name LIKE CONCAT('%', #{roomEnName}, '%')
     </select>
 
     <select id="getRoomCount" resultType="Integer">

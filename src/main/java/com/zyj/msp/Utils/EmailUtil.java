@@ -18,7 +18,7 @@ public class EmailUtil {
      */
     public static String buildContent(String title) {
         //加载邮件html模板
-        Resource resource = new ClassPathResource("static/email.ftl");
+        Resource resource = new ClassPathResource("template/email.ftl");
         InputStream inputStream = null;
         BufferedReader fileReader = null;
         StringBuffer buffer = new StringBuffer();

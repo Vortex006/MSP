@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyj.msp.Mapper.ScheMapper">
+
+    <resultMap id="scheMap" type="com.zyj.msp.Entity.Sche">
+        <id property="scheId" column="sche_id"/>
+        <result property="scheRoom" column="sche_room"/>
+        <result property="scheDoctor" column="sche_doctor"/>
+        <result property="scheDate" column="sche_date"/>
+        <result property="scheFlag" column="sche_flag"/>
+        <result property="scheTotalNum" column="sche_total_num"/>
+        <result property="scheRegNum" column="sche_reg_num"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="updateUser" column="update_user"/>
+    </resultMap>
+
+    <insert id="saveSche">
+        INSERT INTO t_sche(sche_room, sche_doctor, sche_date, sche_flag, sche_total_num, sche_reg_num, create_time,
+                           update_time, create_user, update_user)
+        VALUES (#{scheRoom}, #{scheDoctor}, #{scheDate}, #{scheFlag}, #{scheTotalNum}, #{scheRegNum}, #{createTime},
+                #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+</mapper>

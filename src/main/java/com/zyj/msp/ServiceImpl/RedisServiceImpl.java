@@ -33,6 +33,13 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
+    public Boolean setString(String key, Object value, long timeout, TimeUnit unit) {
+        redis.opsForValue().set(key, value, timeout, unit);
+        Boolean hasKey = hasKey(key);
+        return hasKey;
+    }
+
+    @Override
     public Boolean setHash(String key, String field, Object value) {
         try {
             redis.opsForHash().put(key, field, value);
@@ -209,6 +216,12 @@ public class RedisServiceImpl implements RedisService {
             hashMap.put(entry.getKey().toString(), entry.getValue());
         }
         return hashMap;
+    }
+
+    @Override
+    public Boolean equals(String key, Object value) {
+        Object oldValue = getString(key);
+        return Objects.equals(oldValue, value);
     }
 
     @Override

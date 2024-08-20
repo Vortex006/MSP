@@ -16,7 +16,7 @@
         <result column="update_user" property="updateUser"/>
     </resultMap>
 
-    <select id="listAllPlaces" resultMap="placeMap">
+    <select id="listPlaces" resultMap="placeMap">
         SELECT *
         FROM t_place;
     </select>

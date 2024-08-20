@@ -2,52 +2,74 @@ package com.zyj.msp.Entity;
 
 import lombok.*;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ToString
+@ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Reserve extends EntityBase {
 
     /**
-     * 预约ID，主键，自动增长
+     * 挂号ID
      */
     private Integer reserveId;
 
     /**
-     * 预约用户名，不允许为空，默认值为'无'
+     * 挂号排班
      */
-    private String reserveUsername;
+    private Integer reserveSche;
 
     /**
-     * 预约时间，不允许为空，默认为当前时间
+     * 挂号患者
      */
-    private Date reserveDate;
+    private Integer reservePatient;
 
     /**
-     * 预约科室，不允许为空，默认值为0
+     * 挂号科室
      */
     private Integer reserveRoom;
 
     /**
-     * 预约医生，不允许为空，默认值为0
+     * 挂号医生
      */
     private Integer reserveDoctor;
 
     /**
-     * 留存手机号，不允许为空，默认值为'99999999999'
+     * 挂号日期
+     */
+    private LocalDate reserveDate;
+
+    /**
+     * 挂号状态
+     */
+    private Integer reserveStatus;
+
+    /**
+     * 挂号金额
+     */
+    private BigDecimal reserveMoney;
+
+    /**
+     * 支付方式
+     */
+    private Integer reservePayType;
+
+    /**
+     * 支付状态
+     */
+    private Integer reservePayStatus;
+
+    /**
+     * 留存手机号
      */
     private String reservePhone;
 
     /**
-     * 预约状态，不允许为空，默认值为0
+     * 留存邮箱
      */
-    private Byte reserveStatus;
+    private String reserveEmail;
 
-    /**
-     * 创建人，允许为空
-     */
-    private String createUser;
 }

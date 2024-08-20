@@ -24,10 +24,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public boolean saveRoom(Room room) {
-//        int i = roomMapper.saveRoom(room);
-//        return i > 0;
-        logger.info(room.toString());
-        return true;
+        int i = roomMapper.saveRoom(room);
+        return i > 0;
     }
 
     @Override
@@ -49,9 +47,9 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room getRoomByName(String roomName) {
-        Room room = roomMapper.getRoomByName(roomName);
-        return room;
+    public List<Room> getRoomsByName(String roomName) {
+        List<Room> rooms = roomMapper.getRoomsByName(roomName);
+        return rooms;
     }
 
     @Override

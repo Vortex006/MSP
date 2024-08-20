@@ -19,6 +19,17 @@ public interface RedisService {
      */
     Boolean setString(String key, Object value);
 
+
+    /**
+     * 保存key-value
+     *
+     * @param key      指定的key
+     * @param value    指定的value
+     * @param time     失效时间
+     * @param timeUnit 时间单位
+     */
+    Boolean setString(String key, Object value, long time, TimeUnit timeUnit);
+
     /**
      * 保存hash集合
      *
@@ -244,6 +255,14 @@ public interface RedisService {
      * @return 指定的map对应的hashMap
      */
     HashMap<String, Object> changeMap(Map<Object, Object> map);
+
+    /**
+     * 判断key对应的value是否等于value
+     *
+     * @param key   指定的key
+     * @param value 需要比较的Value
+     */
+    Boolean equals(String key, Object value);
 
     /**
      * 执行自定义的Redis命令

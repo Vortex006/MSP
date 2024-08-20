@@ -28,10 +28,16 @@ public class PlaceController {
         return Result.SUCCEED(places);
     }
 
-    @GetMapping("/{placeName}")
+    @GetMapping("/name/{placeName}")
     public Result getPlaceByName(@PathVariable("placeName") String placeName) {
-        return Result.SUCCEED();
+        List<Place> places = placeService.getPlaceByName(placeName);
+        return Result.SUCCEED(places);
+    }
 
+    @GetMapping("/{placeId}")
+    public Result getPlace(@PathVariable("placeId") Integer placeId) {
+        Place place = placeService.getPlace(placeId);
+        return Result.SUCCEED(place);
     }
 
 

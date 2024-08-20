@@ -34,6 +34,7 @@ public class TokenUtil {
 
     /**
      * 获取一个Token
+     * 过期时间默认为6小时
      *
      * @param userId   用户Id 负载信息1
      * @param userName 用户名 负载信息2
@@ -41,6 +42,7 @@ public class TokenUtil {
      */
     public static String getToken(int userId, String userName) {
         Date date = new Date(System.currentTimeMillis() + (EXP * 60 * 60 * 1000));
+//        Date date = new Date(System.currentTimeMillis() + (EXP));
         String token = JWT.create()
                 .withIssuer(ISS)//设置签发人
                 .withExpiresAt(date)//设置到期时间

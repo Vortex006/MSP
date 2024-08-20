@@ -1,5 +1,7 @@
 package com.zyj.msp.Utils;
 
+import cn.hutool.extra.qrcode.QrCodeUtil;
+import cn.hutool.extra.qrcode.QrConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -10,6 +12,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -47,6 +50,22 @@ public class DataUtil {
      * 验证码长度
      */
     private static int codeLength;
+
+    private static final QrConfig config = new QrConfig(300, 300);
+    private static String wxLogoPath;
+    private static String aliLogPath;
+
+    public static String getWxPayQrCode(String content) {
+        config.setImg(new File(wxLogoPath));
+        String base64 = QrCodeUtil.generateAsBase64(content, config, "png");
+        return base64;
+    }
+
+    public static String getAliPayQrCode(String content) {
+        config.setImg(new File(aliLogPath));
+        String base64 = QrCodeUtil.generateAsBase64(content, config, "png");
+        return base64;
+    }
 
     /**
      * 随机生成一个 8-16位 大小写字母数字组合的密码
@@ -251,5 +270,16 @@ public class DataUtil {
         char genderCode = certNo.charAt(16);
         return (genderCode % 2 != 0);
     }
+
+    @Value("${WX.Logo}")
+    public void setWxLogoPath(String wxLogoPath) {
+        DataUtil.wxLogoPath = wxLogoPath;
+    }
+
+    @Value("${Ali.Logo}")
+    public void setAliLogPath(String aliLogPath) {
+        DataUtil.aliLogPath = aliLogPath;
+    }
+
 
 }

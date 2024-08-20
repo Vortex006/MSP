@@ -48,7 +48,7 @@ mybatis:
   mapper-locations: classpath:Mapper/*.xml
 
 logging:
-  config: classpath:logback-spring.xml
+  config: classpath:config/logback-spring.xml
   level:
     org.springframework: info
     org.hibernate: info

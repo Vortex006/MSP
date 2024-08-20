@@ -5,14 +5,14 @@ import com.zyj.msp.Entity.Patient;
 import com.zyj.msp.Entity.RegisterUser;
 import com.zyj.msp.Entity.User;
 import com.zyj.msp.ExcelEntity.DemoEntity;
+import com.zyj.msp.Service.EmailService;
 import com.zyj.msp.Service.PatientService;
+import com.zyj.msp.Service.RedisService;
 import com.zyj.msp.Service.UserService;
-import com.zyj.msp.ServiceImpl.MailService;
 import com.zyj.msp.Utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
@@ -28,13 +28,16 @@ public class LoginController {
 
     private final UserService userService;
     private final PatientService patientService;
-    private final MailService mailService;
+    private final EmailService emailService;
+    private final RedisService redisService;
 
     @Autowired
-    public LoginController(UserService userService, PatientService patientService, MailService mailService) {
+    public LoginController(UserService userService, PatientService patientService, EmailService emailService,
+                           RedisService redisService) {
         this.userService = userService;
         this.patientService = patientService;
-        this.mailService = mailService;
+        this.emailService = emailService;
+        this.redisService = redisService;
     }
 
     @GetMapping("/{userId}")
@@ -58,8 +61,8 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public Result login(@Valid @RequestBody LoginCredentials loginCredentials, HttpServletRequest request) {
-        String verificationCode = (String) request.getSession().getAttribute("verificationCode");
+    public Result login(@Valid @RequestBody LoginCredentials loginCredentials, HttpSession session) {
+        String verificationCode = (String) session.getAttribute("verificationCode");
         String code = loginCredentials.getCode();
         if (!code.equals(verificationCode)) {
             return Result.FAILED("验证码错误");
@@ -69,14 +72,27 @@ public class LoginController {
             return Result.FAILED("用户名或密码错误");
         }
         if (user.getUserPassword().equals(loginCredentials.getPassword())) {
-            return Result.SUCCEED(TokenUtil.getToken(user.getUserId(), user.getUserName()));
+            String token = TokenUtil.getToken(user.getUserId(), user.getUserName());
+            String key = "userId-" + user.getUserId() + "-token";
+            Boolean isRedisSuccess = redisService.setString(key, token);
+            Boolean isRedisSuccess2 = redisService.expireHours(key, 6);
+            if (isRedisSuccess && isRedisSuccess2) {
+                return Result.SUCCEED(token);
+            } else {
+                return Result.FAILED("redis存储token失败");
+            }
         } else {
             return Result.FAILED("用户名或密码错误");
         }
     }
 
     @PostMapping("/register")
-    public Result register(@Valid @RequestBody RegisterUser registerUser) {
+    public Result register(@Valid @RequestBody RegisterUser registerUser, HttpSession session) {
+        String verificationCode = (String) session.getAttribute("verificationCode");
+        String code = registerUser.getCode();
+        if (!code.equals(verificationCode)) {
+            return Result.FAILED("验证码错误");
+        }
         String username = registerUser.getUserName();
         String uuid = DataUtil.getUUID();
         User user = userService.getUserByName(username);
@@ -110,8 +126,7 @@ public class LoginController {
         if (!Objects.nonNull(user1)) {
             return Result.FAILED("注册失败");
         }
-        String token = TokenUtil.getToken(user1.getUserId(), user1.getUserName());
-        return Result.SUCCEED(token);
+        return Result.SUCCEED();
     }
 
     @GetMapping("/getExcel")
@@ -146,7 +161,7 @@ public class LoginController {
     public Result sendMail() {
         String code = DataUtil.getVerificationCode();
         String emaliHtml = EmailUtil.buildContent(code);
-        mailService.sendTextMailMessage("3409212131@qq.com","这只是一个测试",emaliHtml);
+        emailService.sendTextMailMessage("3409212131@qq.com", "这只是一个测试", emaliHtml);
         return Result.SUCCEED();
     }
 }

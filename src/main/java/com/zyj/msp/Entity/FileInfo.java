@@ -8,7 +8,7 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString()
+@ToString
 public class FileInfo {
     private String name;
     private long size;

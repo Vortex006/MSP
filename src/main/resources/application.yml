@@ -1,16 +1,14 @@
 #设置端口
 server:
   port: 9191
-
-#配置数据源
 spring:
   #数据库配置
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/msp?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/msp?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
-  #邮箱基本配置
+  #邮箱配置
   mail:
     #配置smtp服务主机地址
     # qq邮箱为smtp.qq.com          端口号465或587
@@ -40,16 +38,15 @@ spring:
             required: false
           #开启debug模式，这样邮件发送过程的日志会在控制台打印出来，方便排查错误
         debug: true
+  #Redis配置
   redis:
     host: 127.0.0.1
     port: 6379
-
 #配置mybatis
 mybatis:
   mapper-locations: classpath:Mapper/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
-
 #配置日志框架
 logging:
   config: classpath:config/logback-spring.xml
