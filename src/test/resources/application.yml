@@ -5,9 +5,9 @@ server:
 #配置数据源
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/msp?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
+    url: jdbc:mysql://59.110.158.131:3306/msp?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: msp
+    password: nCWABcJYidYYJYrE
     driver-class-name: com.mysql.jdbc.Driver
   #邮箱基本配置
   mail:
@@ -42,6 +42,12 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: /hamll
+    username: hmall
+    password: 123456
 
 #配置mybatis
 mybatis:
@@ -54,4 +60,3 @@ logging:
     org.hibernate: info
     com.zaxxer: info
     org.mybatis: info
-

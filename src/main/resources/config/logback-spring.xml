@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true" scanPeriod="60 seconds" debug="false">
+<configuration scan="true" scanPeriod="60 seconds" debug="true">
     <property name="patternColor"
-              value="%black(控制台-) %red(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight([%-5level]) %green([%thread]) %boldMagenta(%logger{100}) - %yellow(%msg%n)"/>
+              value="%yellow(控制台-) %red(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight([%-5level]) %green([%thread]) %boldMagenta(%logger{20}) - %black(%msg%n)"/>
     <property name="patternNoColor"
-              value="控制台 - %d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] %logger{100} - %msg%n%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] %logger{20} - %msg%n%n"/>
     <!-- 控制台输出 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.out</target>
@@ -31,12 +31,19 @@
         </rollingPolicy>
     </appender>
 
+    <!-- 自定义Appender -->
+    <!--    <appender name="DBAPPENDER" class="com.vortex.msp.Log.DBAppender" />-->
+    <!--    <appender name="DB_APPENDER" class="com.vortex.msp.Log.DBAppender">-->
+    <!--        &lt;!&ndash; 使用springBean标签引用Spring管理的Bean &ndash;&gt;-->
+    <!--        <springBean id="dbAppender" class="com.vortex.msp.Log.DBAppender"/>-->
+    <!--    </appender>-->
     <logger name="com.zyj.msp.Mapper" level="DEBUG"/>
     <logger name="com.zaxxer.hikari.HikariDataSource" level="OFF"/>
 
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
+        <!--        <appender-ref ref="DBAPPENDER"/>-->
     </root>
 
 </configuration>

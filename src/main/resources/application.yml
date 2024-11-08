@@ -4,9 +4,9 @@ server:
 spring:
   #数据库配置
   datasource:
-    url: jdbc:mysql://localhost:3306/msp?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
+    url: jdbc:mysql://59.110.158.131:3306/msp?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: msp
+    password: nCWABcJYidYYJYrE
     driver-class-name: com.mysql.jdbc.Driver
   #邮箱配置
   mail:
@@ -40,8 +40,17 @@ spring:
         debug: true
   #Redis配置
   redis:
-    host: 127.0.0.1
+    host: 59.110.158.131
     port: 6379
+    password: mspredispassword
+  rabbitmq:
+    host: 59.110.158.131
+    port: 5672
+    virtual-host: MSP
+    username: vortex
+    password: 123456
+  main:
+    log-startup-info: false
 #配置mybatis
 mybatis:
   mapper-locations: classpath:Mapper/*.xml

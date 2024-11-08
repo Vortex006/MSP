@@ -22,6 +22,7 @@
         <hutool.version>5.8.16</hutool.version>
         <easyexcel.version>2.2.6</easyexcel.version>
         <jasypt.version>1.9.3</jasypt.version>
+
     </properties>
     <dependencies>
 
@@ -124,6 +125,12 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
+        <!-- RabbitMQ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
         <!-- HuTool -->
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -137,6 +144,30 @@
             <version>3.4.1</version>
         </dependency>
 
+        <!--        <dependency>-->
+        <!--            <groupId>com.itextpdf.tool</groupId>-->
+        <!--            <artifactId>xmlworker</artifactId>-->
+        <!--            <version>5.5.1</version>-->
+        <!--        </dependency>-->
+
+        <!--        <dependency>-->
+        <!--            <groupId>com.itextpdf</groupId>-->
+        <!--            <artifactId>itext-asian</artifactId>-->
+        <!--            <version>5.2.0</version>-->
+        <!--        </dependency>-->
+
+        <!--        &lt;!&ndash; 支持css样式渲染 &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.xhtmlrenderer</groupId>-->
+        <!--            <artifactId>flying-saucer-pdf-itext5</artifactId>-->
+        <!--            <version>9.0.9</version>-->
+        <!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>html2pdf</artifactId>
+            <version>4.0.3</version>
+        </dependency>
 
     </dependencies>
 
@@ -169,7 +200,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.zyj.msp.MspApplication</mainClass>
+                    <mainClass>com.vortex.msp.MspApplication</mainClass>
                     <skip>false</skip>
                 </configuration>
                 <executions>
@@ -201,6 +232,7 @@
             </snapshots>
         </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>aliyun</id>

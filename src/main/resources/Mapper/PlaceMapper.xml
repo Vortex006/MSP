@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zyj.msp.Mapper.PlaceMapper">
+<mapper namespace="com.vortex.msp.Mapper.PlaceMapper">
 
-    <resultMap id="placeMap" type="com.zyj.msp.Entity.Place">
+    <resultMap id="placeMap" type="com.vortex.msp.Entity.Place">
         <id column="place_id" property="placeId"/>
         <result column="place_area" property="area"/>
         <result column="place_city" property="city"/>

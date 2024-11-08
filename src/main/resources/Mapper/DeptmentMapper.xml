@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vortex.msp.Mapper.DeptmentMapper">
+
+    <resultMap id="deptmentMap" type="com.vortex.msp.Entity.Deptment">
+        <id column="deptment_id" property="deptmentId"/>
+        <result column="deptment_name" property="deptmentName"/>
+        <result column="deptment_type" property="deptmentType"/>
+        <result column="deptment_parent" property="deptmentParent"/>
+        <result column="deptment_place" property="deptmentPlace"/>
+        <result column="deptment_info" property="deptmentInfo"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+    <select id="getDeptment" resultMap="deptmentMap">
+        SELECT *
+        FROM t_deptment
+        WHERE deptment_id = #{deptmentId}
+    </select>
+
+    <select id="getDeptmentsByName" resultMap="deptmentMap">
+        SELECT *
+        FROM t_deptment
+        WHERE deptment_name LIKE CONCAT('%', #{deptmentName}, '%');
+    </select>
+
+    <select id="getDeptmentCount" resultType="Integer">
+        SELECT COUNT(*)
+        FROM t_deptment
+    </select>
+
+    <select id="listDeptments" resultMap="deptmentMap">
+        SELECT *
+        FROM t_deptment
+    </select>
+
+    <insert id="saveDeptment" parameterType="com.vortex.msp.Entity.Deptment">
+        INSERT INTO t_deptment(deptment_name, deptment_type, deptment_parent, deptment_place, deptment_info,
+                               create_user, update_user)
+        VALUES (#{deptmentName}, #{deptmentType}, #{deptmentParent}, #{deptmentPlace}, #{deptmentInfo}, #{createUser},
+                #{updateUser})
+    </insert>
+
+    <update id="updateDeptment">
+        UPDATE t_deptment
+        SET deptment_name   = #{deptmentName},
+            deptment_type   = #{deptmentType},
+            deptment_parent = #{deptmentParent},
+            deptment_place  = #{deptmentPlace},
+            deptment_info   = #{deptmentInfo},
+            create_user     = #{createUser},
+            update_user     = #{updateUser},
+            create_time     = #{createTime},
+            update_time     = #{updateTime}
+        WHERE deptment_id = #{deptmentId}
+    </update>
+
+    <update id="deleteDeptment">
+        UPDATE t_deptment
+        SET deleted = 1
+        WHERE deptment_id = #{deptmentId}
+    </update>
+
+    <select id="limitDeptments" resultMap="deptmentMap">
+        SELECT *
+        FROM t_deptment
+        LIMIT #{offset},#{pageSize};
+    </select>
+
+    <select id="getDeptmentsByZZJ" resultMap="deptmentMap">
+        SELECT *
+        FROM t_deptment
+        WHERE deptment_type = #{deptType}
+          AND deptment_parent = #{deptParent}
+    </select>
+
+</mapper>

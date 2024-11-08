@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zyj.msp.Mapper.ScheMapper">
+<mapper namespace="com.vortex.msp.Mapper.ScheMapper">
 
-    <resultMap id="scheMap" type="com.zyj.msp.Entity.Sche">
+    <resultMap id="scheMap" type="com.vortex.msp.Entity.Sche">
         <id property="scheId" column="sche_id"/>
         <result property="scheRoom" column="sche_room"/>
         <result property="scheDoctor" column="sche_doctor"/>

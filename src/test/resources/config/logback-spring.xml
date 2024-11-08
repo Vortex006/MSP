@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <property name="pattern"
-              value="%black(控制台-) %red(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight([%-5level]) %green([%thread]) %boldMagenta(%logger{1000000}) - %yellow(%msg%n)"/>
+              value="%black(控制台-) %red(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight([%-5level]) %green([%thread]) %boldMagenta(%logger{1000000}) - %black(%msg%n)"/>
     <!-- 控制台输出 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.out</target>

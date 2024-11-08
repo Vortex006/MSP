@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zyj.msp.Mapper.ReserveMapper">
+<mapper namespace="com.vortex.msp.Mapper.ReserveMapper">
 
-    <resultMap id="reserveMap" type="com.zyj.msp.Entity.Reserve">
+    <resultMap id="reserveMap" type="com.vortex.msp.Entity.Reserve">
         <id column="reserve_id" property="reserveId"/>
         <result column="reserve_phone" property="reservePhone"/>
         <result column="reserve_username" property="reserveUsername"/>
@@ -50,7 +50,7 @@
     </select>
 
     <!--添加预约信息-->
-    <insert id="saveReserve" parameterType="com.zyj.msp.Entity.Reserve">
+    <insert id="saveReserve" parameterType="com.vortex.msp.Entity.Reserve">
         INSERT INTO t_reserve(reserve_username, reserve_date, reserve_phone, reserve_room, reserve_doctor,
                               reserve_status, create_user, create_time, update_user, update_time)
         VALUES (#{reserveUsername}, #{reserveDate}, #{reservePhone}, #{reserveRoom}, #{reserveDoctor}, #{reserveStatus},
@@ -58,7 +58,7 @@
     </insert>
 
     <!--修改预约信息-->
-    <update id="update" parameterType="com.zyj.msp.Entity.Reserve">
+    <update id="update" parameterType="com.vortex.msp.Entity.Reserve">
         UPDATE t_reserve
         SET reserve_username = #{reserveUsername},
             reserve_date     = #{reserveDate},
