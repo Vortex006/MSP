@@ -87,17 +87,18 @@ public class MspApplicationTests {
     }
 
     @Test
-    void log() {
-        logger.info("test log");
-    }
-
-    @Test
     void ftl() {
         Map<String, Object> dataModel = new HashMap<>();
         dataModel.put("title", "Welcome Page");
         dataModel.put("name", "World");
         String htmlContent = CreateHtml("demo.ftl", dataModel);
-        HtmlGenerator.html2Pdf(htmlContent, "D:\\demo.pdf");
+        HtmlGenerator.html2Pdf(htmlContent, "D:\\aabbc.pdf");
+    }
+
+    @Test
+    void name() {
+
+
     }
 
 }
