@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -26,14 +23,14 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    public Boolean setString(String key, Object value) {
+    public Boolean setString(String key, String value) {
         redis.opsForValue().set(key, value);
         Boolean hasKey = hasKey(key);
         return hasKey;
     }
 
     @Override
-    public Boolean setString(String key, Object value, long timeout, TimeUnit unit) {
+    public Boolean setString(String key, String value, long timeout, TimeUnit unit) {
         redis.opsForValue().set(key, value, timeout, unit);
         Boolean hasKey = hasKey(key);
         return hasKey;
@@ -98,6 +95,10 @@ public class RedisServiceImpl implements RedisService {
         String value = String.valueOf(redis.opsForValue().get(key));
         return value;
     }
+
+//    public void dd(String key){
+//
+//    }
 
     @Override
     public Object getHash(String key, String field) {
@@ -228,6 +229,12 @@ public class RedisServiceImpl implements RedisService {
     public T execute(RedisCallback<T> action) {
         T execute = redis.execute(action);
         return execute;
+    }
+
+    @Override
+    public Set<String> keys(String pattern) {
+        Set<String> keys = redis.keys(pattern);
+        return keys;
     }
 
 

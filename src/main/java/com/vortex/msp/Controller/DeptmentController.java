@@ -1,17 +1,26 @@
 package com.vortex.msp.Controller;
 
 import com.vortex.msp.Entity.Deptment;
-import com.vortex.msp.Exception.ParameterNullException;
+import com.vortex.msp.Entity.REQ.REQ_GetDeptmentInfo;
+import com.vortex.msp.Entity.RESP.RESP_GetDeptmentInfo;
 import com.vortex.msp.Service.DeptmentService;
+import com.vortex.msp.Utils.DateUtil;
 import com.vortex.msp.Utils.Result;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/deptment")
+@Tag(name = "科室模块")
 public class DeptmentController implements BaseController<Deptment> {
 
     private final DeptmentService deptmentService;
@@ -102,14 +111,42 @@ public class DeptmentController implements BaseController<Deptment> {
         return Result.SUCCEED(deptments);
     }
 
-    @PostMapping("/terminal/getDeptment")
-    public Result getDeptmentsByZZJ(@RequestBody Deptment deptment) {
-        Integer deptType = deptment.getDeptmentType();
-        Integer deptParent = deptment.getDeptmentParent();
-        if (ObjectUtils.isEmpty(deptType) || ObjectUtils.isEmpty(deptParent)) {
-            throw new ParameterNullException("参数不能为空");
+    @PostMapping("/terminal/getDeptmentInfo")
+    public Result getDeptmentInfoByTerminal(@RequestBody REQ_GetDeptmentInfo request) {
+        List<RESP_GetDeptmentInfo> resp_getDeptmentInfos = new ArrayList<>();
+        if (StringUtils.hasText(request.getDeptmentNo())) {
+            Deptment deptment = deptmentService.getDeptment(Integer.parseInt(request.getDeptmentNo()));
+            if (!ObjectUtils.isEmpty(deptment)) {
+                RESP_GetDeptmentInfo info = new RESP_GetDeptmentInfo();
+                info.setDeptmentNo(deptment.getDeptmentId().toString());
+                info.setDeptmentName(deptment.getDeptmentName());
+                info.setDeptmentParent(deptment.getDeptmentParent().toString());
+                info.setDeptmentPlace(deptment.getDeptmentPlace());
+                info.setTime(request.getTime());
+                info.setTraceId(request.getTraceId());
+                resp_getDeptmentInfos.add(info);
+            } else {
+                return Result.FAILED("查询科室信息失败");
+            }
+        } else {
+            List<Deptment> deptments = deptmentService.listDeptments();
+            if (ObjectUtils.isEmpty(deptments)) {
+                return Result.FAILED("查询科室信息失败");
+            }
+            resp_getDeptmentInfos = deptments.stream().map(deptment -> {
+                RESP_GetDeptmentInfo info = new RESP_GetDeptmentInfo();
+                info.setDeptmentNo(deptment.getDeptmentId().toString());
+                info.setDeptmentName(deptment.getDeptmentName());
+                info.setDeptmentParent(deptment.getDeptmentParent().toString());
+                info.setDeptmentPlace(deptment.getDeptmentPlace());
+                return info;
+            }).collect(Collectors.toList());
+            Map<String, Object> result = new HashMap<>();
+            result.put("result", resp_getDeptmentInfos);
+            result.put("time", DateUtil.getLocalDateTimeStr(request.getTime()));
+            result.put("traceId", request.getTraceId());
+            return Result.SUCCEED(result);
         }
-        List<Deptment> deptments = deptmentService.getDeptmentsByZZJ(deptType, deptParent);
-        return Result.SUCCEED(deptments);
+        return Result.SUCCEED(resp_getDeptmentInfos);
     }
 }

@@ -17,7 +17,7 @@ public interface PatientMapper {
 
     Patient getPatient(Integer patientId);
 
-    Patient getPatientZZJ(@Param("columnName") String columnName, @Param("cardNo") String cardNo);
+    Patient getPatientInfoByTerminal(@Param("columnName") String columnName, @Param("cardNo") String cardNo);
 
     Patient getPatientByCertNo(String certNo);
 

@@ -15,14 +15,14 @@ public class Dict extends EntityBase {
     private Integer dictId;
 
     /**
-     * 字典说明
+     * 字典类型
      */
-    private String dictInfo;
+    private String dictType;
 
     /**
      * 字典键
      */
-    private String dictKey;
+    private Integer dictKey;
 
     /**
      * 字典值
@@ -30,8 +30,9 @@ public class Dict extends EntityBase {
     private String dictValue;
 
     /**
-     * 字典类型
+     * 字典说明
      */
-    private String dictType;
+    private String dictInfo;
+
 }
 

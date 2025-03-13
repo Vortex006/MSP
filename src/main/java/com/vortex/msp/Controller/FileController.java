@@ -1,153 +1,140 @@
 package com.vortex.msp.Controller;
 
-import com.vortex.msp.Entity.FileInfo;
+import com.vortex.msp.Utils.DataUtil;
+import com.vortex.msp.Utils.FtpUtil;
 import com.vortex.msp.Utils.Result;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.io.*;
-import java.util.Arrays;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequestMapping("/file")
 public class FileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
-    private final String filePath = "D:\\File";
+
+    @Value("${file.download.max.size}")
+    private int downloadMaxSize;
+    @Value("${file.local.root.path}")
+    private String localFileRootPath;
+
+    @Autowired
+    private FtpUtil ftpUtil;
+
+    @GetMapping("/download/{fileName}")
+    public ResponseEntity<StreamingResponseBody> download(@PathVariable("fileName") String fileName) {
+        try {
+            String localPath = DataUtil.getFilePath(localFileRootPath, "file", fileName);
+            File localFile = new File(localPath);
+            File patient = localFile.getParentFile();
+            if (!patient.exists()) {
+                patient.mkdirs();
+            }
+            if (localFile.exists()) {
+                localFile.delete();
+            }
+
+//            boolean isDownload = ftpUtil.downloadFile(fileName,localPath);
+//            if(!isDownload){
+//                throw new RuntimeException("从远程服务器下载文件失败");
+//            }
+//            File file = new File(localPath);
+//            if(!file.exists()){
+//                throw new RuntimeException("文件不存在");
+//            }
+
+            // 设置响应头信息
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+            headers.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(ftpUtil.getFileLength(fileName)));
+            headers.add(HttpHeaders.CACHE_CONTROL, "no-store, must-revalidate"); // 防止缓存
+            headers.add(HttpHeaders.PRAGMA, "no-cache"); // 防止缓存
+            StreamingResponseBody body = outputStream -> {
+                ftpUtil.downloadFile(fileName, outputStream);
+                outputStream.flush();
+//                try (FileInputStream inputStream = new FileInputStream(file)) {
+//                    byte[] buffer = new byte[downloadMaxSize * 1024 * 1024];
+//                    int bytesRead;
+//                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+//                        outputStream.write(buffer, 0, bytesRead);
+//                        outputStream.flush(); // 确保数据及时发送
+//                    }
+//                }
+//                } catch (IOException e) {
+//                    logger.error("文件转成数据流异常,异常信息==>{}", e.getMessage());
+//                    throw new RuntimeException("文件转成数据流异常", e);
+//                }
+            };
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(body);
+        } catch (Exception e) {
+            StreamingResponseBody bodys = outputStream -> {
+                String msg = "下载文件出现异常，异常信息==>" + e.getClass() + e.getMessage();
+                outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
+            };
+            logger.error("下载文件出现异常,异常信息==>{}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(bodys);
+        }
+    }
 
     @PostMapping("/upload")
-    public Result upload(@RequestParam("file") MultipartFile file) {
-        String fileName = file.getOriginalFilename();
-        File dic = new File(filePath);
-        if (!dic.exists()) {
-            boolean mkdir = dic.mkdir();
-            logger.info("文件夹创建结果：{}", mkdir);
-        }
-        File localFile = new File(filePath + "\\" + fileName);
-        if (!localFile.exists()) {
-            try {
-                boolean newFile = localFile.createNewFile();
-                OutputStream outputStream = new FileOutputStream(localFile);
-                outputStream.write(file.getBytes());
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return Result.SUCCEED(localFile.getPath());
-    }
-
-    @GetMapping("/metadata")
-    public Result getFileInfo() {
-        String filePath = "E:\\视频\\录屏\\20230604_215401.mp4";
-        // 根据fileName获取文件信息，包括总大小
-        File file = new File(filePath);
-        FileInputStream fis;
-        String md5 = null;
-        try {
-            fis = new FileInputStream(file);
-            md5 = DigestUtils.md5Hex(fis);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        FileInfo fileInfo = new FileInfo(file.getName(), file.length(), getChunk(file), md5);
-        return Result.SUCCEED(fileInfo);
-    }
-
-    @GetMapping("/download/{chunkIndex}")
-    public Result downloadChunk(@PathVariable("chunkIndex") int chunkIndex) {
-        String fileName = "E:\\视频\\录屏\\20230604_215401.mp4";
-        File file = new File(fileName);
-        long fileSize = file.length(); // 获取文件总大小
-        long chunkSize = getChunk(file); // 假设这个方法返回正确的分块大小或文件总块数
-        if (chunkIndex < 0 || chunkIndex > chunkSize) {
-            return Result.FAILED("文件块索引超出范围");
+    public Result uploadFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("fileName") String fileName,
+            @RequestParam("totalChunks") int totalChunks,
+            @RequestParam("currentChunk") int currentChunk) throws IOException {
+        String hz = fileName.substring(fileName.lastIndexOf("."));
+        logger.debug("文件后缀名==>{}", hz);
+        String newFileName = DataUtil.getUUID() + hz;
+        logger.debug("新文件名==>{}", newFileName);
+        String path = DataUtil.getFilePath(localFileRootPath, "file", newFileName);
+        File targetFile = new File(path);
+        File parentFile = targetFile.getParentFile();
+        if (!parentFile.exists()) {
+            boolean isMkdirs = parentFile.mkdirs();
+            if (!isMkdirs) return Result.Exception("创建目录失败");
         }
 
-        int bufferSize = 10 * 1024 * 1024; // 缓冲区大小
-        byte[] bytes;
+        if (targetFile.exists() && currentChunk == 1) {
+            boolean isDel = targetFile.delete();
+            if (!isDel) return Result.Exception("删除文件失败");
+        }
 
-        try (InputStream in = new FileInputStream(file)) {
-            // 计算当前分块的开始位置
-            long startPosition = (long) (chunkIndex - 1) * bufferSize;
+        try (OutputStream os = new FileOutputStream(targetFile, true)) {
+            os.write(file.getBytes());
+        }
 
-            // 特殊处理最后一个分块，确保不超过文件实际大小
-            if (chunkIndex == chunkSize) {
-                long remainingBytes = fileSize - startPosition;
-                bytes = new byte[Math.toIntExact(remainingBytes)];
+        if (currentChunk == totalChunks) {
+            logger.info("文件[{}]上传完毕", fileName);
+            String ftpPath = fileName;
+            logger.info("文件上传FTP路径==>{}", ftpPath);
+            boolean isUpload = ftpUtil.uploadFile(ftpPath, targetFile.getAbsolutePath());
+            if (isUpload) {
+                logger.info("文件上传FTP成功");
             } else {
-                bytes = new byte[bufferSize];
+                logger.error("文件上传FTP失败，文件路径==>{}", targetFile.getAbsolutePath());
             }
-
-            // 读取数据
-            int bytesRead = Math.toIntExact(in.skip(startPosition)); // 跳转到分块开始位置
-            if (bytesRead != startPosition) {
-                throw new IOException("跳转到分块位置失败");
-            }
-            bytesRead = in.read(bytes);
-            if (bytesRead == -1) {
-                return Result.FAILED("读取文件块时发生错误");
-            }
-            // 如果实际读取的字节数少于缓冲区大小，截取数组以去除未填充的部分
-            if (bytesRead < bytes.length) {
-                bytes = Arrays.copyOf(bytes, bytesRead);
-            }
-        } catch (IOException e) {
-            return Result.FAILED("文件读取过程中发生错误: " + e.getMessage());
+            return Result.SUCCEED("文件已经上传成功", newFileName);
         }
 
-        return Result.SUCCEED(bytes);
-    }
-
-//    @GetMapping("/download/{chunkIndex}")
-//    public Result downloadChunk(@PathVariable("chunkIndex") int chunkIndex) throws IOException {
-//        String fileName = "E:\\视频\\录屏\\20230604_215401.mp4";
-//        File file = new File(fileName);
-//        long chunkSize = getChunk(file);
-//        if (chunkIndex < 0 || chunkIndex > chunkSize) {
-//            return Result.FAILED("文件块索引超出范围");
-//        }
-//        byte[] bytes = new byte[10 * 1024 * 1024];
-//        InputStream in = new FileInputStream(file);
-//        if (!(chunkIndex == chunkSize)){
-//            int a = in.read(bytes, (chunkIndex - 1) * 10 * 1024 * 1024, 10 * 1024 * 1024);
-//        } else {
-//            long c = in.skip((long) (chunkIndex - 1) * 10 * 1024 * 1024);
-//            long fileSize = file.length();
-//            int dd = Math.toIntExact(fileSize % 10 * 1024 * 1024);
-//            int a = in.read(bytes,0, dd);
-//        }
-//        return Result.SUCCEED(bytes);
-//    }
-
-    /**
-     * 计算文件的块数。
-     *
-     * @param file 要计算的文件
-     * @return 文件的块数
-     */
-    public int getChunk(File file) {
-        long CHUNK_SIZE = 10 * 1024 * 1024; // 100 MB
-        // 检查文件是否为空，避免NullPointerException
-        if (ObjectUtils.isEmpty(file)) {
-            throw new IllegalArgumentException("File cannot be null.");
-        }
-        long fileSize = file.length();
-        // 预防整数溢出，使用long类型进行计算
-        long chunks = fileSize / CHUNK_SIZE;
-
-        // 处理边界情况，如果文件大小正好是CHUNK_SIZE的倍数，应确保块数加1
-        long remainder = fileSize % CHUNK_SIZE;
-        if (remainder != 0) {
-            chunks++;
-        }
-        // 由于方法签名要求返回int类型，这里将long转换为int
-        // 由于之前已经预防了溢出，这里转换是安全的
-        return (int) chunks;
+        logger.info("文件[{}]分块上传成功，当前块：{}，总块数：{}", fileName, currentChunk, totalChunks);
+        return Result.SUCCEED("分块上传成功", null);
     }
 
 }

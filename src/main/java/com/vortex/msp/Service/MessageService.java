@@ -26,4 +26,6 @@ public interface MessageService {
     Integer countMessageByUser(Integer userId);
 
     Integer countMessage();
+
+    Boolean sendDingMsg(String msg, String msgType);
 }

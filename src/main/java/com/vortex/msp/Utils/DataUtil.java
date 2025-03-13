@@ -2,7 +2,6 @@ package com.vortex.msp.Utils;
 
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.extra.qrcode.QrConfig;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -14,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -31,21 +32,20 @@ public class DataUtil {
     private static final Random random = new Random();
 
     /**
-     * 对象映射器
-     */
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    /**
      * 空字符串
      */
     private static final String Empty = "";
+
     /**
      * 脱敏字符
      */
     private static char mark;
+
     /**
      * 验证码字符集
      */
     private static String codeCharArray;
+
     /**
      * 验证码长度
      */
@@ -132,12 +132,6 @@ public class DataUtil {
         return maskedUsername + "@" + email.split("@")[1];
     }
 
-    //将数据转换为JAVA对象
-    public static <T> T ParseJson(Object data, Class<T> valueType) {
-        T t = OBJECT_MAPPER.convertValue(data, valueType);
-        return t;
-    }
-
     public static String getUUID() {
         String uuid = UUID.randomUUID().toString().replaceAll("-", Empty);
         return uuid;
@@ -189,7 +183,6 @@ public class DataUtil {
 
     /**
      * 获取验证码
-     *
      * @return 验证码
      */
     public static String getVerificationCode() {
@@ -286,5 +279,55 @@ public class DataUtil {
         DataUtil.aliLogPath = aliLogPath;
     }
 
+    /**
+     * 字节数组转16进制
+     *
+     * @param bytes 字节数组
+     * @return 16进制字符串
+     */
+    public static String bytesToHex(byte[] bytes) {
+        StringBuilder result = new StringBuilder();
+        for (byte b : bytes) {
+            result.append(String.format("%02X", b));
+        }
+        return result.toString();
+    }
+
+    /**
+     * 16进制字符串转字节数组
+     *
+     * @param hexString 16进制字符串
+     * @return 字节数组
+     */
+    public static byte[] hexToBytes(String hexString) {
+        int len = hexString.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
+                    + Character.digit(hexString.charAt(i + 1), 16));
+        }
+        return data;
+    }
+
+    /**
+     * 拼接文件路径
+     *
+     * @param rootPath 根路径
+     * @param path     路径集合
+     * @return 拼接后的路径
+     */
+    public static String getFilePath(String rootPath, String... path) {
+//        ApplicationHome applicationHome = new ApplicationHome(getClass());
+//        String filePath = applicationHome.getDir().getAbsolutePath();
+        Path file = Paths.get(rootPath, path);
+        return file.toString();
+    }
+
+    public static String findLast(String[] strings) {
+        if (strings == null || strings.length <= 0) {
+            return null;
+        }
+        return strings[strings.length - 1];
+    }
 
 }

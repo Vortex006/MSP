@@ -1,6 +1,5 @@
 package com.vortex.msp.Config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -8,20 +7,20 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Value("${spring.isTest}")
-    private boolean isTest;
+//    @Value("${spring.isTest}")
+//    private boolean isTest;
 
     //这里是放行静态资源的
     @Override
     public void configure(WebSecurity web) throws Exception {
-        if (isTest) {
-            web.ignoring().antMatchers("/**");
-        } else {
-            web.ignoring()
-                    .antMatchers("/resources/**",
-                            "/static/**", "/css/**",
-                            "/js/**", "/login/**", "/images/**", "/index.html");
-        }
+//        if (isTest) {
+        web.ignoring().antMatchers("/**");
+//        } else {
+//            web.ignoring()
+//                    .antMatchers("/resources/**",
+//                            "/static/**", "/css/**",
+//                            "/js/**", "/login/**", "/images/**", "/index.html");
+//        }
     }
 
     @Override

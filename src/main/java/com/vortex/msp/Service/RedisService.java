@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public interface RedisService {
@@ -17,7 +18,7 @@ public interface RedisService {
      * @param key   指定的key
      * @param value 指定的value
      */
-    Boolean setString(String key, Object value);
+    Boolean setString(String key, String value);
 
 
     /**
@@ -28,7 +29,7 @@ public interface RedisService {
      * @param time     失效时间
      * @param timeUnit 时间单位
      */
-    Boolean setString(String key, Object value, long time, TimeUnit timeUnit);
+    Boolean setString(String key, String value, long time, TimeUnit timeUnit);
 
     /**
      * 保存hash集合
@@ -270,5 +271,7 @@ public interface RedisService {
      * @param action 自定义的Redis命令
      */
     T execute(RedisCallback<T> action);
+
+    Set<String> keys(String pattern);
 
 }

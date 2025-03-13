@@ -1,21 +1,20 @@
-# Getting Started
+### 尊敬的%s，您已预约挂号成功！
 
-### Reference Documentation
+以下是您预约的详细信息：
 
-For further reference, please consider the following sections:
+- 就诊日期：%s
+- 就诊时间：%s-%s
+- 就诊科室：%s
+- 就诊医生：%s
+- 科室地址：%s
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.4.2/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.4.2/maven-plugin/reference/html/#build-image)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/2.4.2/reference/htmlsingle/#web)
-* [Spring Boot DevTools](https://docs.spring.io/spring-boot/docs/2.4.2/reference/htmlsingle/#using.devtools)
+请按时到达医院，并在就诊前至少15分钟到达以完成登记手续。
 
-### Guides
+如果您需要取消或更改预约，请提前联系我们。
 
-The following guides illustrate how to use some features concretely:
+感谢您选择我们的医疗服务。祝您健康！
 
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
-* [Accessing data with MySQL](https://spring.io/guides/gs/accessing-data-mysql/)
+如有任何疑问，请联系客服热线：0000-123456789
 
+<div align="right">
+    <p>智慧医疗服务平台</p> 

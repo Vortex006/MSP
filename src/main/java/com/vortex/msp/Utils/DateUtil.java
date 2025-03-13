@@ -3,6 +3,7 @@ package com.vortex.msp.Utils;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,16 +38,16 @@ public class DateUtil {
         return format.format(date);
     }
 
-    public static List<String> getScheTime() {
+    public static List<String> getScheTime(String startStr, String endStr) {
         // 使用Duration设置每15分钟的间隔
-        Duration duration = Duration.ofMinutes(15);
+        Duration duration = Duration.ofMinutes(30);
         // 创建时间格式化对象
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalDate date = LocalDate.parse("2024-06-24");
+//        LocalDate date = LocalDate.parse("2024-06-24");
         // 设置开始和结束时间
-        LocalTime startTime = LocalTime.parse("08:00", timeFormatter);
-        LocalTime endTime = LocalTime.parse("18:00", timeFormatter);
+        LocalTime startTime = LocalTime.parse(startStr, timeFormatter);
+        LocalTime endTime = LocalTime.parse(endStr, timeFormatter);
 
         // 特定排除的开始和结束时间
         LocalTime excludeStart = LocalTime.parse("11:30", timeFormatter);
@@ -80,5 +81,46 @@ public class DateUtil {
         LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
         return localDateTime;
     }
+
+    public static LocalDateTime getLocalDateTime(String dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(dateTime, formatter);
+    }
+
+    public static String getLocalDateTimeStr(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return localDateTime.format(formatter);
+    }
+
+    public static List<LocalDate> getDatesBetween(LocalDate startDate, LocalDate endDate) {
+        List<LocalDate> datesBetween = new ArrayList<>();
+        if (startDate.equals(endDate)) {
+            datesBetween.add(startDate);
+            return datesBetween;
+        }
+
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("开始日期必须在结束日期之前");
+        }
+
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+
+        for (int i = 0; i <= daysBetween; i++) {
+            datesBetween.add(startDate.plusDays(i));
+        }
+
+        return datesBetween;
+    }
+
+    public static String now() {
+        LocalDateTime dateTime = LocalDateTime.now();
+        return getLocalDateTimeStr(dateTime);
+    }
+
+    public static LocalTime getLocalTime(String time) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        return LocalTime.parse(time, formatter);
+    }
+
 
 }

@@ -1,12 +1,14 @@
 package com.vortex.msp.ServiceImpl;
 
 import com.vortex.msp.Entity.Patient;
+import com.vortex.msp.Entity.RESP.RESP_GetPatientInfo;
 import com.vortex.msp.Enum.CardType;
 import com.vortex.msp.Exception.ParameterNullException;
 import com.vortex.msp.Mapper.PatientMapper;
 import com.vortex.msp.Service.PatientService;
 import com.vortex.msp.Utils.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -46,15 +48,26 @@ public class PatientServiceImpl implements PatientService {
         return patient;
     }
 
+    @Cacheable(value = "patientCache", key = "{#cardType,#cardNo}")
     @Override
-    public Patient getPatientZZJ(Integer cardType, String cardNo) {
+    public RESP_GetPatientInfo getPatientInfoByTerminal(Integer cardType, String cardNo) {
         String columnName = CardType.findColName(cardType);
-        if (StringUtils.hasText(columnName)) {
-            Patient patient = patientMapper.getPatientZZJ(columnName, cardNo);
-            return patient;
-        } else {
+        if (!StringUtils.hasText(columnName)) {
             throw new ParameterNullException("不支持的卡类型");
         }
+        Patient patient = patientMapper.getPatientInfoByTerminal(columnName, cardNo);
+        RESP_GetPatientInfo patientInfo = new RESP_GetPatientInfo();
+        patientInfo.setPatientId(patient.getPatientId());
+        patientInfo.setCardNo(patient.getPatientCardNo());
+        patientInfo.setCertNo(patient.getPatientCertNo());
+        patientInfo.setName(patient.getPatientName());
+        patientInfo.setAge(patient.getPatientAge());
+        patientInfo.setSex(patient.getPatientSex());
+        patientInfo.setBirthday(patient.getPatientBirthday());
+        patientInfo.setMobile(patient.getPatientPhone());
+        patientInfo.setEthnicity(patient.getPatientEthnicity());
+        patientInfo.setAddress(patient.getPatientPlace());
+        return patientInfo;
     }
 
     @Override

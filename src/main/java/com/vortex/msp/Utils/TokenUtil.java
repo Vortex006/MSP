@@ -1,6 +1,7 @@
 package com.vortex.msp.Utils;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -17,21 +19,6 @@ public class TokenUtil {
     private static Long EXP; //过期时间六小时 单位:毫秒(ms)
     private static String KEY; //密钥
 
-    @Value("${Token.IIS.Name}")
-    public void setISS(String ISS) {
-        TokenUtil.ISS = ISS;
-    }
-
-    @Value("${Token.EXP.Hours}")
-    public void setEXP(Long EXP) {
-        TokenUtil.EXP = EXP;
-    }
-
-    @Value("${Token.KEY}")
-    public void setKEY(String KEY) {
-        TokenUtil.KEY = KEY;
-    }
-
     /**
      * 获取一个Token
      * 过期时间默认为6小时
@@ -40,17 +27,30 @@ public class TokenUtil {
      * @param userName 用户名 负载信息2
      * @return token字符串
      */
-    public static String getToken(int userId, String userName) {
+    public static String getToken(HashMap<String, String> data) {
         Date date = new Date(System.currentTimeMillis() + (EXP * 60 * 60 * 1000));
-//        Date date = new Date(System.currentTimeMillis() + (EXP));
-        String token = JWT.create()
-                .withIssuer(ISS)//设置签发人
-                .withExpiresAt(date)//设置到期时间
-                .withClaim("userId", userId)//设置负载信息1
-                .withClaim("userName", userName)//设置负载信息2
-                .sign(Algorithm.HMAC256(KEY));
-        return token;
+        JWTCreator.Builder builder = JWT.create().withIssuer(ISS)//设置签发人
+                .withExpiresAt(date);//设置到期时间
+        data.forEach(builder::withClaim);
+        return builder.sign(Algorithm.HMAC256(KEY));
     }
+
+    @Value("${token.iis.name}")
+    public void setISS(String ISS) {
+        TokenUtil.ISS = ISS;
+    }
+
+    @Value("${token.exp.hours}")
+    public void setEXP(Long EXP) {
+        TokenUtil.EXP = EXP;
+    }
+
+    @Value("${token.key}")
+    public void setKEY(String KEY) {
+        TokenUtil.KEY = KEY;
+    }
+
+//    public static String getToken(String content, String )
 
     /**
      * 验证token 原理：验证异常会抛异常 根据异常进行解析

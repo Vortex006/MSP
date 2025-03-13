@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vortex.msp.Mapper.VersionMapper">
+
+    <resultMap id="versionMap" type="com.vortex.msp.Entity.Version">
+        <id property="versionId" column="version_id" jdbcType="INTEGER" javaType="Integer"/>
+        <result property="versionType" column="version_type" jdbcType="INTEGER" javaType="Integer"/>
+        <result property="versionNo" column="version_no" jdbcType="VARCHAR" javaType="String"/>
+        <result property="versionName" column="version_name" jdbcType="VARCHAR" javaType="String"/>
+        <result property="versionResource" column="version_resource"/>
+        <result property="versionRemark" column="version_remark" jdbcType="VARCHAR" javaType="String"/>
+        <result property="latest" column="latest" jdbcType="BOOLEAN" javaType="Boolean"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="create_user" property="createUser" jdbcType="VARCHAR" javaType="String"/>
+        <result column="update_user" property="updateUser" jdbcType="VARCHAR" javaType="String"/>
+    </resultMap>
+
+    <insert id="saveVersion">
+        INSERT INTO t_version(version_type, version_no, version_name, version_resource, version_remark, latest, create_time, update_time, create_user, update_user)
+        VALUES (#{versionType}, #{versionNo}, #{versionName}, #{versionResource}, #{versionRemark}, #{latest}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+    <update id="updateAllLatestFalse">
+        UPDATE t_version
+        SET latest = 0
+        WHERE version_type = #{versionType};
+    </update>
+
+    <select id="limitVersions" resultMap="versionMap">
+        SELECT *
+        FROM t_version
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <select id="countVersions" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM t_version
+    </select>
+
+    <select id="getLatestVersion" resultMap="versionMap">
+        SELECT *
+        FROM t_version
+        WHERE version_type = #{versionType}
+          AND latest = 1
+        ORDER BY version_id DESC
+        LIMIT 1;
+    </select>
+
+</mapper>

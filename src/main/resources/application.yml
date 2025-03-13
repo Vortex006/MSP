@@ -1,13 +1,29 @@
 #设置端口
 server:
   port: 9191
+  tomcat:
+    connection-timeout: 60000
 spring:
+  mvc:
+    async:
+      request-timeout: 60000
   #数据库配置
   datasource:
-    url: jdbc:mysql://59.110.158.131:3306/msp?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-    username: msp
-    password: nCWABcJYidYYJYrE
-    driver-class-name: com.mysql.jdbc.Driver
+    druid:
+      url: jdbc:mysql://59.110.158.131:9882/msp?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+      username: msp
+      password: nCWABcJYidYYJYrE
+      driver-class-name: com.mysql.jdbc.Driver
+      initialSize: 1
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      useUnfairLock: true
+      poolPreparedStatements: false
+      testOnBorrow: false
+      testOnReturn: false
+      testWhileIdle: true
+      timeBetweenEvictionRunsMillis: 10000
   #邮箱配置
   mail:
     #配置smtp服务主机地址
@@ -41,16 +57,22 @@ spring:
   #Redis配置
   redis:
     host: 59.110.158.131
-    port: 6379
-    password: mspredispassword
+    port: 18632
+    password: Qb5q4wURKgSfX3M97h
   rabbitmq:
     host: 59.110.158.131
     port: 5672
     virtual-host: MSP
     username: vortex
-    password: 123456
+    password: AWBLyX8J2ht1cue
   main:
     log-startup-info: false
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  cache:
+    type: redis
 #配置mybatis
 mybatis:
   mapper-locations: classpath:Mapper/*.xml
@@ -64,3 +86,24 @@ logging:
     org.hibernate: info
     com.zaxxer: info
     org.mybatis: info
+    io.lettuce.core: info
+# springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.vortex.msp.Controller
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+  basic:
+    username: admin
+    password: 123456

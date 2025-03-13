@@ -3,6 +3,7 @@ package com.vortex.msp.Controller;
 import com.vortex.msp.Entity.Place;
 import com.vortex.msp.Service.PlaceService;
 import com.vortex.msp.Utils.Result;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/place")
+@Tag(name = "地址模块")
 public class PlaceController {
 
     private final PlaceService placeService;

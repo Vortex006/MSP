@@ -1,6 +1,7 @@
 package com.vortex.msp.Service;
 
 import com.vortex.msp.Entity.Patient;
+import com.vortex.msp.Entity.RESP.RESP_GetPatientInfo;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface PatientService {
 
     Patient getPatient(Integer patientId);
 
-    Patient getPatientZZJ(Integer cardType, String cardNo);
+    RESP_GetPatientInfo getPatientInfoByTerminal(Integer cardType, String cardNo);
 
     Patient getPatientByCertNo(String certNo);
 

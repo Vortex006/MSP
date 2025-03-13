@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vortex.msp.Mapper.AppointmentMapper">
+
+    <resultMap id="appointmentMap" type="com.vortex.msp.Entity.Appointment">
+        <id property="appointmentId" column="appointment_id" jdbcType="INTEGER"/>
+        <result property="scheduleId" column="schedule_id" jdbcType="INTEGER"/>
+        <result property="patientId" column="patient_id" jdbcType="INTEGER"/>
+        <result property="appointmentState" column="appointment_state" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="create_user" property="createUser" jdbcType="VARCHAR" javaType="String"/>
+        <result column="update_user" property="updateUser" jdbcType="VARCHAR" javaType="String"/>
+    </resultMap>
+
+    <insert id="saveAppointment" parameterType="com.vortex.msp.Entity.Appointment"
+            useGeneratedKeys="true" keyProperty="appointmentId">
+        INSERT INTO t_appointment(appointment_scheduleId, appointment_patientId, appointment_state, create_time,
+                                  update_time, create_user, update_user)
+        VALUES (#{scheduleId},
+                #{patientId}, #{appointmentState}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+    <select id="getAppointmentBySchedule" resultMap="appointmentMap">
+        SELECT *
+        FROM t_appointment
+        WHERE appointment_scheduleId = #{scheduleId}
+    </select>
+
+    <select id="getAppointmentByPatient" resultMap="appointmentMap">
+        SELECT *
+        FROM t_appointment
+        WHERE appointment_patientId = #{patientId}
+    </select>
+
+    <select id="listAppointments" resultMap="appointmentMap">
+        SELECT *
+        FROM t_appointment
+    </select>
+    <select id="getAppointment" resultMap="appointmentMap">
+        SELECT *
+        FROM t_appointment
+        WHERE appointment_id = #{appointmentId}
+    </select>
+
+    <select id="getAppointmentInfo" resultType="java.util.Map">
+        SELECT p.patient_name,
+               s.schedule_date,
+               s.schedule_startTime,
+               s.schedule_endTime,
+               d.doctor_name,
+               dept.deptment_name,
+               dept.deptment_place
+        FROM t_appointment AS a
+                 JOIN
+             t_patient AS p ON a.appointment_patientId = p.patient_id
+                 JOIN
+             t_schedule AS s ON a.appointment_scheduleId = s.schedule_id
+                 JOIN
+             t_doctor AS d ON s.schedule_doctorId = d.doctor_id
+                 JOIN
+             t_deptment AS dept ON s.schedule_deptmentId = dept.deptment_id
+        WHERE appointment_id = #{appointmentId};
+    </select>
+
+</mapper>

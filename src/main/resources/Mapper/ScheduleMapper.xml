@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vortex.msp.Mapper.ScheduleMapper">
+
+    <resultMap id="scheduleMap" type="com.vortex.msp.Entity.Schedule">
+        <id column="schedule_id" property="scheduleId" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="schedule_deptmentId" property="scheduleDeptmentId" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="schedule_doctorId" property="scheduleDoctorId" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="schedule_date" property="scheduleDate" jdbcType="DATE"/>
+        <result column="schedule_startTime" property="scheduleStartTime" jdbcType="TIME"/>
+        <result column="schedule_endTime" property="scheduleEndTime" jdbcType="TIME"/>
+        <result column="schedule_type" property="scheduleType" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="schedule_num" property="scheduleNum" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="create_user" property="createUser" jdbcType="VARCHAR" javaType="String"/>
+        <result column="update_user" property="updateUser" jdbcType="VARCHAR" javaType="String"/>
+    </resultMap>
+
+    <insert id="saveSchedule">
+        INSERT INTO t_schedule(schedule_deptmentId,
+                               schedule_doctorId,
+                               schedule_date,
+                               schedule_startTime,
+                               schedule_endTime,
+                               schedule_type,
+                               schedule_num)
+        VALUES (#{scheduleDeptmentId},
+                #{scheduleDoctorId},
+                #{scheduleDate},
+                #{scheduleStartTime},
+                #{scheduleEndTime},
+                #{scheduleType},
+                #{scheduleNum})
+
+    </insert>
+
+    <select id="listSchedules" resultMap="scheduleMap">
+        SELECT *
+        FROM t_schedule
+    </select>
+
+    <select id="getScheduleCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM t_schedule
+    </select>
+
+    <select id="getSchedule" resultMap="scheduleMap">
+        SELECT *
+        FROM t_schedule
+        WHERE schedule_id = #{scheduleId}
+    </select>
+
+    <select id="getScheduleByDate" resultMap="scheduleMap">
+        SELECT *
+        FROM t_schedule
+        WHERE schedule_date = #{date}
+    </select>
+
+    <select id="getScheduleByDates" resultMap="scheduleMap">
+        SELECT *
+        FROM t_schedule
+        WHERE schedule_date IN
+        <foreach item="date" collection="list" open="(" separator="," close=")">
+            #{date}
+        </foreach>
+    </select>
+
+    <select id="limitSchedules" resultMap="scheduleMap">
+        SELECT *
+        FROM t_schedule
+        LIMIT #{offset},#{pageSize};
+    </select>
+
+    <select id="test" resultType="com.vortex.msp.Entity.Schedule">
+        SELECT *
+        FROM t_schedule
+        WHERE schedule_date = #{date}
+          AND schedule_startTime = #{time}
+          AND schedule_deptmentId = #{dept}
+          AND schedule_doctorId = #{doctor}
+          AND schedule_type = #{title}
+    </select>
+
+</mapper>

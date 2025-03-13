@@ -10,6 +10,9 @@ import com.vortex.msp.Service.PatientService;
 import com.vortex.msp.Service.RedisService;
 import com.vortex.msp.Service.UserService;
 import com.vortex.msp.Utils.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,18 +21,20 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/login")
+@Tag(name = "登录模块")
 public class LoginController {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final UserService userService;
     private final PatientService patientService;
     private final EmailService emailService;
     private final RedisService redisService;
+    private long timeout = 6 * 60 * 60 * 1000; //6小时
 
     @Autowired
     public LoginController(UserService userService, PatientService patientService, EmailService emailService,
@@ -49,7 +54,7 @@ public class LoginController {
     @GetMapping("/codeImg")
     public Result getCode(HttpSession session) {
         String verificationCode = DataUtil.getVerificationCode();
-        System.out.println("verificationCode:" + verificationCode);
+        logger.debug("verificationCode:{}", verificationCode);
         session.setAttribute("verificationCode", verificationCode);
         String imgBase64 = DataUtil.getVerificationCodeImg(verificationCode);
         return Result.SUCCEED(imgBase64);
@@ -71,12 +76,18 @@ public class LoginController {
         if (Objects.isNull(user)) {
             return Result.FAILED("用户名或密码错误");
         }
-        if (user.getUserPassword().equals(loginCredentials.getPassword())) {
-            String token = TokenUtil.getToken(user.getUserId(), user.getUserName());
+        String db_Password = EncryptUtil.decrypted(user.getUserPassword(), user.getUserSalt());
+        if (db_Password.equals(loginCredentials.getPassword())) {
+
+            HashMap<String, String> map = new HashMap<>();
+            map.put("userId", user.getUserId().toString());
+            String token = TokenUtil.getToken(map);
             String key = "userId-" + user.getUserId() + "-token";
-            Boolean isRedisSuccess = redisService.setString(key, token);
-            Boolean isRedisSuccess2 = redisService.expireHours(key, 6);
-            if (isRedisSuccess && isRedisSuccess2) {
+            Boolean isRedisSuccess = redisService.setString(key, token, 6, TimeUnit.HOURS);
+            Map<String, String> result = new HashMap<>();
+            result.put("AccessToken", token);
+//            result.put("ExpiryTime", String.valueOf(System.currentTimeMillis() + ()));
+            if (isRedisSuccess) {
                 return Result.SUCCEED(token);
             } else {
                 return Result.FAILED("redis存储token失败");
@@ -97,7 +108,7 @@ public class LoginController {
         String uuid = DataUtil.getUUID();
         User user = userService.getUserByName(username);
         if (Objects.nonNull(user)) {
-            return Result.FAILED("用户名已被使用 换一个吧");
+            return Result.FAILED("用户名已被占用");
         }
         user = new User();
         user.setUserName(username);
@@ -107,7 +118,9 @@ public class LoginController {
         user.setUserFlag(2);
         String certNo = registerUser.getCertNo();
         Patient patient = new Patient();
+        patient.setPatientCardNo(certNo);
         patient.setPatientCertNo(certNo);
+        patient.setPatientSex(1);
         patient.setPatientAge(DataUtil.getAgeByCertNo(certNo));
         patient.setPatientName(registerUser.getName());
         patient.setPatientBirthday(DataUtil.getBirthDateByCertNo(certNo));
@@ -164,4 +177,15 @@ public class LoginController {
         emailService.sendTextMailMessage("3409212131@qq.com", "这只是一个测试", emaliHtml);
         return Result.SUCCEED();
     }
+
+    @GetMapping("/token/{qrId}")
+    public Result GetScanQrCodeToken(@PathVariable("qrId") String qrId) {
+        String token = String.valueOf(redisService.getString("ScanSucceed-QrId-" + qrId));
+        if (Objects.nonNull(token)) {
+            return Result.SUCCEED(token);
+        } else {
+            return Result.FAILED();
+        }
+    }
+
 }

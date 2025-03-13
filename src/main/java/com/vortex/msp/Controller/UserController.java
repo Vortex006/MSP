@@ -2,6 +2,7 @@ package com.vortex.msp.Controller;
 
 import com.vortex.msp.Service.UserService;
 import com.vortex.msp.Utils.Result;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name = "用户模块")
 public class UserController {
 
     private final UserService userService;
